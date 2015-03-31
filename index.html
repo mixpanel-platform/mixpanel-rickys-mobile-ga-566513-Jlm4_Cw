@@ -25,10 +25,8 @@
     <script>
       MP.api.ready(function() {
         var revenueEvent = $('#eventSelectRev').MPEventSelect();
-        var propSelectRev  = $('#propSelectRev').MPPropertySelect();
         var DAUEventName = $('#eventSelectDAU').MPEventSelect();
-        var propSelectRAU  = $('#propSelectDAU').MPPropertySelect();
-         
+
         var dateSelect  = $('#dateSelect').MPDatepicker();
         var eventGraph  = $('#graph').MPChart({chartType: 'line'});
         var eventTable  = $('#table').MPTable({
