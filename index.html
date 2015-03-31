@@ -8,16 +8,7 @@
   <body class="mixpanel-platform-body">
   <div class="mixpanel-platform-section">
       <div id="eventSelectRev" style="float: left;"></div>
-      <!--
-      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
-      <div id="propSelectRev" style="float: left;"></div>
-      -->
       <div id="eventSelectDAU" style="float: left;"></div>
-      <!-- 
-      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
-      <div id="propSelectDAU" style="float: left;"></div>
-      <div id="dateSelect" style="float: right;"></div>
-      -->
       <div style="clear: both;"></div>
       <div id="graph"></div>
     </div>
@@ -26,7 +17,6 @@
       MP.api.ready(function() {
         var revenueEventName = $('#eventSelectRev').MPEventSelect();
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
-        var dateSelect  = $('#dateSelect').MPDatepicker();
       
         var revenueProp = 'amount';
         var runQuery = function(){
@@ -68,11 +58,8 @@
        revenueEventName.on('change', function(r, rEventName) {
          dauEventName.on('change', function(d, dEventName){
           runQuery();
-          alert( 'HI' )           
-         })
-
+         });
         });
-        dateSelect.on('change', runQuery);
       });
     </script>
   </body>
