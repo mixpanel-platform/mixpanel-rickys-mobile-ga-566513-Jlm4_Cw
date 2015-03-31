@@ -26,13 +26,7 @@
       MP.api.ready(function() {
         var revenueEvent = $('#eventSelectRev').MPEventSelect();
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
-
         var dateSelect  = $('#dateSelect').MPDatepicker();
-        var eventGraph  = $('#graph').MPChart({chartType: 'line'});
-        var eventTable  = $('#table').MPTable({
-          showPercentages: true,
-          firstColHeader: 'Event'
-        });
       
         var revenueProp = 'amount';
         var runQuery = function(){
