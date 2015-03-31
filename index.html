@@ -68,9 +68,12 @@
   
           });
         }
-       revenueEvent.on('change', function(e, eventName) {
+       revenueEvent.on('change', function(r, rEventName) {
+         dauEventName.on('change', function(d, dEventName){
           runQuery();
-          alert( 'HI' )
+          alert( 'HI' )           
+         })
+
         });
         dateSelect.on('change', runQuery);
       });
