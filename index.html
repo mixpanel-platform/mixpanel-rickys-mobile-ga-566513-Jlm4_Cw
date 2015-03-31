@@ -6,47 +6,75 @@
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
   </head>
   <body class="mixpanel-platform-body">
-
+  <div class="mixpanel-platform-section">
+      <div id="eventSelectRev" style="float: left;"></div>
+      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
+      <div id="propSelectRev" style="float: left;"></div>
+      <div id="eventSelectDAU" style="float: left;"></div>
+      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
+      <div id="propSelectDAU" style="float: left;"></div>
+      <div id="dateSelect" style="float: right;"></div>
+      <div style="clear: both;"></div>
+      <div id="graph"></div>
+    </div>
     <div id="table"></div>
     <script>
       MP.api.ready(function() {
-      
-        var dauEventName = 'App Open';
-        var revenueEvent = 'In-App Purchase';
-        var revenueProp = 'amount';
-
-        var dauParams = {
-          'unit': 'day',
-          'type': 'unique',
-          'from': moment().subtract(30, 'days')
-        }
-
-        var $dau = MP.api.events(dauEventName, dauParams);
-        var $revenue = MP.api.segment(revenueEvent, revenueProp, {from: moment().subtract(30, 'days'), method: 'sum'});
-
-
-
-        $.when($dau, $revenue).done(function(dau, revenue){
-          var dauValues = dau.values();
-          var revenueValues = revenue.values();
-          var data = {
-              'ARPDAU': {
-              }
-          };
-
-
-          _.each(_.keys(dauValues[dauEventName]), function(key){
-              if (key in revenueValues && revenueValues[key] && dauValues[dauEventName][key]) {
-                  data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEventName][key];
-              }
-          });
-
-          var chart = $('<div></div>').appendTo('body').MPChart({chartType: 'line'});
-
-          chart.MPChart('setData', data);
-
+        var revenueEvent = $('#eventSelectRev').MPEventSelect();
+        var propSelectRev  = $('#propSelectRev').MPPropertySelect();
+        var DAUEventName = $('#eventSelectDAU').MPEventSelect();
+        var propSelectRAU  = $('#propSelectDAU').MPPropertySelect();
+         
+        var dateSelect  = $('#dateSelect').MPDatepicker();
+        var eventGraph  = $('#graph').MPChart({chartType: 'line'});
+        var eventTable  = $('#table').MPTable({
+          showPercentages: true,
+          firstColHeader: 'Event'
         });
-
+      
+        var revenueProp = 'amount';
+        var runQuery = function(){
+          var dauParams = {
+            'unit': 'day',
+            'type': 'unique',
+            'from': moment().subtract(30, 'days')
+          }
+  
+          var $dau = MP.api.events(dauEventName, dauParams);
+          var $revenue = MP.api.segment(revenueEvent, revenueProp, {from: moment().subtract(30, 'days'), method: 'sum'});
+  
+  
+  
+          $.when($dau, $revenue).done(function(dau, revenue){
+            var dauValues = dau.values();
+            var revenueValues = revenue.values();
+            var data = {
+                'ARPDAU': {
+                }
+            };
+  
+  
+            _.each(_.keys(dauValues[dauEventName]), function(key){
+                if (key in revenueValues && revenueValues[key] && dauValues[dauEventName][key]) {
+                    data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEventName][key];
+                }
+            });
+  
+            var chart = $('<div></div>').appendTo('body').MPChart({chartType: 'line'});
+  
+            chart.MPChart('setData', data);
+  
+          });
+        }
+       revenueEvent.on('change', function(e, eventName) {
+          propSelect.MPPropertySelect('setEvent', eventName);
+          $("#by").show();
+          runQuery();
+          alert( 'HI' )
+        });
+        propSelect.on('change', runQuery);
+        dateSelect.on('change', runQuery);
+      });
       });
     </script>
   </body>
