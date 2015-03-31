@@ -24,20 +24,23 @@
     <div id="table"></div>
     <script>
       MP.api.ready(function() {
-        var revenueEvent = $('#eventSelectRev').MPEventSelect();
+        var revenueEventName = $('#eventSelectRev').MPEventSelect();
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
         var dateSelect  = $('#dateSelect').MPDatepicker();
       
         var revenueProp = 'amount';
         var runQuery = function(){
+          var dauEvent = dauEventName.MPEventSelect('value');
+          var revenueEvent  = revenueEventName.MPEventSelect('value');
+          
           var dauParams = {
             'unit': 'day',
             'type': 'unique',
             'from': moment().subtract(30, 'days')
           }
   
-          var $dau = MP.api.events(dEventName, dauParams);
-          var $revenue = MP.api.segment(rEventName, revenueProp, {from: moment().subtract(30, 'days'), method: 'sum'});
+          var $dau = MP.api.events(dauEvent, dauParams);
+          var $revenue = MP.api.segment(revenueEvent, revenueProp, {from: moment().subtract(30, 'days'), method: 'sum'});
   
   
   
@@ -62,7 +65,7 @@
   
           });
         }
-       revenueEvent.on('change', function(r, rEventName) {
+       revenueEventName.on('change', function(r, rEventName) {
          dauEventName.on('change', function(d, dEventName){
           runQuery();
           alert( 'HI' )           
