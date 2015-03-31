@@ -47,11 +47,12 @@
                 if (key in revenueValues && revenueValues[key] && dauValues[dauEventName][key]) {
                     data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEventName][key];
                 }
+            
+            var chart = $('#graph').MPChart({chartType: 'line'});
+            chart.MPChart('setData', data);
             });
   
-            var chart = $('#graph').MPChart({chartType: 'line'});
-  
-            chart.MPChart('setData', data);
+
   
           });
         }
