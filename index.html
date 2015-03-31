@@ -59,7 +59,7 @@
                 }
             });
   
-            var chart = $('<div></div>').appendTo('body').MPChart({chartType: 'line'});
+            var chart = $('#graph').replace('body').MPChart({chartType: 'line'});
   
             chart.MPChart('setData', data);
   
