@@ -57,7 +57,7 @@
        dauEventName.on('change', function(d, dEventName){
          dauProp.MPPropertySelect('setEvent', dEventName);
        });
-       if (revenueProp && dauProp) {
+       if (revenueProp.val() && dauProp.val()) {
         runQuery();
        }
       });
