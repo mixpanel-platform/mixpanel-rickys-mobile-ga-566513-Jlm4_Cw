@@ -32,7 +32,7 @@
           }
   
           var $dau = MP.api.events(dauEvent, dauParams);
-          var $revenue = MP.api.segment(revenueEvent, revenueProp.val, {from: moment().subtract(30, 'days'), method: 'sum'});
+          var $revenue = MP.api.segment(revenueEvent, revenueProp.val(), {from: moment().subtract(30, 'days'), method: 'sum'});
   
   
   
