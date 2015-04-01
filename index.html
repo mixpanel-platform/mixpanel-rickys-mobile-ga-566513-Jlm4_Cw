@@ -23,33 +23,42 @@
         var revenueProp = $('#propSelectRev').MPPropertySelect();
         var dauProp = $('#propSelectDAU').MPPropertySelect();
 
-        var runQuery = function(){
+       var propCheck = function (){
+         if (typeof revenueProp.val() != 'object' && typeof dauProp.val() != 'object') {
+          runQuery();
+         }
+       }
+
+       var runQuery = function(){
           var dauEvent = dauEventName.MPEventSelect('value');
           var revenueEvent  = revenueEventName.MPEventSelect('value');
           var dauParams = {
+            'on': 'properties["' + dauProp.val() +'"]',
             'unit': 'day',
             'type': 'unique',
             'from': moment().subtract(30, 'days')
           }
-
-          var $dau = MP.api.events(dauEvent, dauParams);
-          var $revenue = MP.api.segment(revenueEvent, revenueProp.val(), {from: moment().subtract(30, 'days'), method: 'sum'});
-          $.when($dau, $revenue).done(function(dau, revenue){
+          var $dau = MP.api.segment(dauEvent, dauParams);
+          $.when($dau).done(function(dau){
             var dauValues = dau.values();
-            var revenueValues = revenue.values();
             var data = {
                 'ARPDAU': {
                 }
             };
-            _.each(_.keys(dauValues[dauEvent]), function(key){
-                if (key in revenueValues && revenueValues[key] && dauValues[dauEvent][key]) {
-                    data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEvent][key];
-                }
+            _.each(_.keys(dauValues), function(key){
+              console.log(key)
+              var $revenue = MP.api.segment(revenueEvent, revenueProp.val(), {
+                'where': '(properties["$city"] == "' + key + '")', 
+                method: 'sum', 
+                from: moment().subtract(30, 'days')
+              });
+              console.log($revenue)
             });
             var chart = $('#graph').MPChart({chartType: 'line'});
             chart.MPChart('setData', data);
           });
         }
+
        revenueEventName.on('change', function(r, rEventName) {
         revenueProp.MPPropertySelect('setEvent', rEventName);
        });
@@ -57,10 +66,8 @@
        dauEventName.on('change', function(d, dEventName){
          dauProp.MPPropertySelect('setEvent', dEventName);
        });
-       if (revenueProp.val() && dauProp.val()) {
-         debugger
-        runQuery();
-       }
+        revenueProp.on('change', propCheck);
+        dauProp.on('change', propCheck);
       });
     </script>
   </body>
