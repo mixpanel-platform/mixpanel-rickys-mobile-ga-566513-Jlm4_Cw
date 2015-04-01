@@ -8,6 +8,7 @@
   <body class="mixpanel-platform-body">
   <div class="mixpanel-platform-section">
       <div id="eventSelectRev" style="float: left;"></div>
+       <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
       <div id="propSelectRev" style="float: left;"></div>
       <div id="eventSelectDAU" style="float: left;"></div>
       <div id="propSelectDAU" style="float: left;"></div>
@@ -56,6 +57,7 @@
         }
        revenueEventName.on('change', function(r, rEventName) {
         propSelectRev.MPPropertySelect('setEvent', rEventName);
+        $("#by").show();
         dauEventName.on('change', function(d, dEventName){
           runQuery();
          });
