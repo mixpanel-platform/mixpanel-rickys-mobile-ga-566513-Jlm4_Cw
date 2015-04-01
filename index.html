@@ -21,6 +21,8 @@
         var revenueEventName = $('#eventSelectRev').MPEventSelect();
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
         var revenueProp = $('#propSelectRev').MPPropertySelect();
+        var dauProp = $('#propSelectDAU').MPPropertySelect();
+
         var runQuery = function(){
           var dauEvent = dauEventName.MPEventSelect('value');
           var revenueEvent  = revenueEventName.MPEventSelect('value');
@@ -29,13 +31,9 @@
             'type': 'unique',
             'from': moment().subtract(30, 'days')
           }
-  
+
           var $dau = MP.api.events(dauEvent, dauParams);
-          debugger
           var $revenue = MP.api.segment(revenueEvent, revenueProp.val(), {from: moment().subtract(30, 'days'), method: 'sum'});
-  
-  
-  
           $.when($dau, $revenue).done(function(dau, revenue){
             var dauValues = dau.values();
             var revenueValues = revenue.values();
@@ -43,8 +41,6 @@
                 'ARPDAU': {
                 }
             };
-  
-  
             _.each(_.keys(dauValues[dauEvent]), function(key){
                 if (key in revenueValues && revenueValues[key] && dauValues[dauEvent][key]) {
                     data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEvent][key];
@@ -56,11 +52,16 @@
         }
        revenueEventName.on('change', function(r, rEventName) {
         revenueProp.MPPropertySelect('setEvent', rEventName);
-        dauEventName.on('change', function(d, dEventName){
-          runQuery();
-         });
-        });
+       });
+
+       dauEventName.on('change', function(d, dEventName){
+         dauProp.MPPropertySelect('setEvent', dEventName);
+       });
+       if (revenueEventName && dauEventName) {
+        runQuery();
+       }
       });
     </script>
   </body>
 </html>
+
