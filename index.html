@@ -49,7 +49,7 @@
                     data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEvent][key];
                 }
             });
-            var chart = $('<div></div>').appendTo('body').MPChart({chartType: 'line'});
+            var chart = $('#graph').MPChart({chartType: 'line'});
             chart.MPChart('setData', data);
           });
         }
