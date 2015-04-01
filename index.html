@@ -48,7 +48,7 @@
                     data['ARPDAU'][key] = revenueValues[key] / dauValues[dauEventName][key];
                 }
             
-            var chart = $('#graph').MPChart({chartType: 'line'});
+            var chart = $('#graph').appendTo('body').MPChart({chartType: 'line'});
             chart.MPChart('setData', data);
             });
   
