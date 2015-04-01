@@ -8,7 +8,9 @@
   <body class="mixpanel-platform-body">
   <div class="mixpanel-platform-section">
       <div id="eventSelectRev" style="float: left;"></div>
+      <div id="propSelectRev" style="float: left;"></div>
       <div id="eventSelectDAU" style="float: left;"></div>
+      <div id="propSelectDAU" style="float: left;"></div>
       <div style="clear: both;"></div>
       <div id="graph"></div>
     </div>
@@ -18,11 +20,11 @@
         var revenueEventName = $('#eventSelectRev').MPEventSelect();
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
       
-        var revenueProp = 'amount';
+        var revenueProp = $('#propSelectRev').MPPropertySelect();
+      
         var runQuery = function(){
           var dauEvent = dauEventName.MPEventSelect('value');
           var revenueEvent  = revenueEventName.MPEventSelect('value');
-          
           var dauParams = {
             'unit': 'day',
             'type': 'unique',
@@ -53,7 +55,9 @@
           });
         }
        revenueEventName.on('change', function(r, rEventName) {
-         dauEventName.on('change', function(d, dEventName){
+        propSelectRev.MPPropertySelect('setEvent', rEventName);
+        $("#by").show();
+        dauEventName.on('change', function(d, dEventName){
           runQuery();
          });
         });
