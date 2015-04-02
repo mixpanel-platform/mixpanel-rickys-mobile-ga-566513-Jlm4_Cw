@@ -33,35 +33,30 @@
           var dauEvent = dauEventName.MPEventSelect('value');
           var revenueEvent  = revenueEventName.MPEventSelect('value');
           var dauParams = {
-            'on': 'properties["' + dauProp.val() +'"]',
-            'unit': 'day',
-            'type': 'unique',
-            'from': moment().subtract(30, 'days')
+            on: 'properties["' + dauProp.val() +'"]',
+            unit: 'day',
+            type: 'unique',
+            from: moment().subtract(30, 'days')
+          }
+
+          var revParams = {
+            event: revenueEvent,
+            inner: 'properties["' + revenueProp.val() + '"]',
+            outer: 'properties["' + dauProp.val() + '"]',
+            action: 'sum', 
+            unit: 'day',
+            from: moment().subtract(30, 'days'),
+            to: moment().subtract(1, 'days')
           }
           var $dau = MP.api.segment(dauEvent, dauParams);
-          $.when($dau).done(function(dau){
-            var dauValues = dau.values();
-            var data = {};
-            var promises = []
-            _.each(_.keys(dauValues), function(key){
-              console.log(key)
-              var $revenue = MP.api.segment(revenueEvent, revenueProp.val(), {
-                'where': '(properties["' + dauProp.val() + '"] == "' + key + '")', 
-                method: 'sum', 
-                from: moment().subtract(30, 'days')
-              });
-              promises.push($revenue)
-              $.when($revenue).done(function(rev){
-                console.log (rev.values())
-                console.log (dauValues[key])
-                data[key] = MP.Data.inst(rev.values()).divide(dauValues[key]).values()
-                console.log (data)
-              });
-            });
-            Promise.all(promises).then(function(){
-              var chart = $('#graph').MPChart({chartType: 'line'});
-              chart.MPChart('setData', data);
-            });
+          var $revenue = MP.api.query('api/2.0/segmentation/multiseg', revParams);
+          $.when($dau, $revenue).done(function(dau, rev){
+            console.log(rev)
+            console.log(dau)
+            var data = MP.Data.inst(rev.data.values).divide(dau).values();
+            console.log(data)
+            var chart = $('#graph').MPChart({chartType: 'line'});
+            chart.MPChart('setData', data);
           })
         }
 
