@@ -41,22 +41,28 @@
           var $dau = MP.api.segment(dauEvent, dauParams);
           $.when($dau).done(function(dau){
             var dauValues = dau.values();
-            var data = {
-                'ARPDAU': {
-                }
-            };
+            var data = {};
+            var promises = []
             _.each(_.keys(dauValues), function(key){
               console.log(key)
               var $revenue = MP.api.segment(revenueEvent, revenueProp.val(), {
-                'where': '(properties["$city"] == "' + key + '")', 
+                'where': '(properties["' + dauProp.val() + '"] == "' + key + '")', 
                 method: 'sum', 
                 from: moment().subtract(30, 'days')
               });
-              console.log($revenue)
+              promises.push($revenue)
+              $.when($revenue).done(function(rev){
+                console.log (rev.values())
+                console.log (dauValues[key])
+                data[key] = MP.Data.inst(rev.values()).divide(dauValues[key]).values()
+                console.log (data)
+              });
             });
-            var chart = $('#graph').MPChart({chartType: 'line'});
-            chart.MPChart('setData', data);
-          });
+            Promise.all(promises).then(function(){
+              var chart = $('#graph').MPChart({chartType: 'line'});
+              chart.MPChart('setData', data);
+            });
+          })
         }
 
        revenueEventName.on('change', function(r, rEventName) {
