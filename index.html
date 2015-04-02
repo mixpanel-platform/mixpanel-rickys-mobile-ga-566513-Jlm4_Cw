@@ -27,7 +27,7 @@
           if (typeof revenueProp.val() != 'object' && typeof dauProp.val() != 'object') {
             runQuery();
           }
-        }
+        };
 
       // Query logic
        var runQuery = function(){
@@ -40,7 +40,7 @@
             unit: 'day',
             type: 'unique',
             from: moment().subtract(30, 'days')
-          }
+          };
 
           var revParams = {
             event: revenueEvent,
@@ -50,20 +50,25 @@
             unit: 'day',
             from: moment().subtract(30, 'days'),
             to: moment().subtract(1, 'days')
-          }
+          };
+
           // Lets make requests
           var $dau = MP.api.segment(dauEvent, dauParams);
           var $revenue = MP.api.query('api/2.0/segmentation/multiseg', revParams);
-          var data = {}
+          var data = {};
 
           // When requests are complete iterate through all keys and their dates
           $.when($dau, $revenue).done(function(dau, rev){
             _.each(_.keys(dau.values()), function(key){
-              data[key] = {}
+              data[key] = {};
               _.each(_.keys(dau.values()[key]), function(date){
-                   var divisor = rev.data.values[key][date];
-                   var dividend = dau.values()[key][date];
-                   var result = divisor / dividend;
+                  console.log (key, date, rev.data.values[key])
+                  var result = 0;
+                   if (typeof rev.data.values[key] != 'undefined') {
+                     var divisor = rev.data.values[key][date];
+                     var dividend = dau.values()[key][date];
+                     result = divisor / dividend;
+                   }
                    // Validation where the graph broke because it tried to scale infinty
                    if (result == Infinity || result == undefined){
                      result = 0;
