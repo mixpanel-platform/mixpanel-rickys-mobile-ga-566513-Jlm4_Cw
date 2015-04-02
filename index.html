@@ -22,16 +22,19 @@
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
         var revenueProp = $('#propSelectRev').MPPropertySelect();
         var dauProp = $('#propSelectDAU').MPPropertySelect();
+        // Property validation
+        var propCheck = function (){
+          if (typeof revenueProp.val() != 'object' && typeof dauProp.val() != 'object') {
+            runQuery();
+          }
+        }
 
-       var propCheck = function (){
-         if (typeof revenueProp.val() != 'object' && typeof dauProp.val() != 'object') {
-          runQuery();
-         }
-       }
-
+      // Query logic
        var runQuery = function(){
           var dauEvent = dauEventName.MPEventSelect('value');
           var revenueEvent  = revenueEventName.MPEventSelect('value');
+
+          // Setting our paramaters to the selected values
           var dauParams = {
             on: 'properties["' + dauProp.val() +'"]',
             unit: 'day',
@@ -43,23 +46,41 @@
             event: revenueEvent,
             inner: 'properties["' + revenueProp.val() + '"]',
             outer: 'properties["' + dauProp.val() + '"]',
-            action: 'sum', 
+            action: 'sum',
             unit: 'day',
             from: moment().subtract(30, 'days'),
             to: moment().subtract(1, 'days')
           }
+          // Lets make requests
           var $dau = MP.api.segment(dauEvent, dauParams);
           var $revenue = MP.api.query('api/2.0/segmentation/multiseg', revParams);
+          var data = {}
+
+          // When requests are complete iterate through all keys and their dates
           $.when($dau, $revenue).done(function(dau, rev){
-            console.log(rev)
-            console.log(dau)
-            var data = MP.Data.inst(rev.data.values).divide(dau).values();
-            console.log(data)
+            _.each(_.keys(dau.values()), function(key){
+              data[key] = {}
+              _.each(_.keys(dau.values()[key]), function(date){
+                   var divisor = rev.data.values[key][date];
+                   var dividend = dau.values()[key][date];
+                   var result = divisor / dividend;
+                   // Validation where the graph broke because it tried to scale infinty
+                   if (result == Infinity || result == undefined){
+                     result = 0;
+                   }
+
+                   // Set the key's date to the result
+                   data[key][date] = result;
+                });
+             });
+
+            // Chart it
             var chart = $('#graph').MPChart({chartType: 'line'});
             chart.MPChart('setData', data);
           })
         }
 
+       // Responses to UX Changes
        revenueEventName.on('change', function(r, rEventName) {
         revenueProp.MPPropertySelect('setEvent', rEventName);
        });
@@ -67,8 +88,8 @@
        dauEventName.on('change', function(d, dEventName){
          dauProp.MPPropertySelect('setEvent', dEventName);
        });
-        revenueProp.on('change', propCheck);
-        dauProp.on('change', propCheck);
+       revenueProp.on('change', propCheck);
+       dauProp.on('change', propCheck);
       });
     </script>
   </body>
