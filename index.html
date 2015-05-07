@@ -73,13 +73,14 @@
                    if (result == Infinity || result == undefined){
                      result = 0;
                    }
-
+                  
                    // Set the key's date to the result
                    data[key][date] = result;
                 });
              });
 
             // Chart it
+            debugger
             var chart = $('#graph').MPChart({chartType: 'line'});
             chart.MPChart('setData', data);
           })
