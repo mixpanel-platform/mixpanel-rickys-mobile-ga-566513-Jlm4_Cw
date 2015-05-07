@@ -61,17 +61,15 @@
             _.each(_.keys(dau.values()), function(key){
               data[key] = {};
               _.each(_.keys(dau.values()[key]), function(date){
-                  console.log (key, date, rev.data.values[key])
                   
                   var result = 0;
                    if (typeof rev.data.values[key] != 'undefined') {
                      var divisor = rev.data.values[key][date];
                      var dividend = dau.values()[key][date];
-                     console.log (divisor, dividend)
                      result = divisor / dividend;
                    }
                    // Validation where the graph broke because it tried to scale infinty
-                   if (result == Infinity || result == undefined || isNaN(result)){
+                   if (result == Infinity|| isNaN(result)){
                      result = 0;
                    }
                   
