@@ -65,8 +65,8 @@
                   
                   var result = 0;
                    if (typeof rev.data.values[key] != 'undefined') {
-                     var divisor = rev.data.values[key][date] || 0;
-                     var dividend = dau.values()[key][date] || 0;
+                     var divisor = rev.data.values[key][date];
+                     var dividend = dau.values()[key][date];
                      console.log (divisor, dividend)
                      result = divisor / dividend;
                    }
