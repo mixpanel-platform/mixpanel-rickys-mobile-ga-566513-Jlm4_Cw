@@ -56,14 +56,14 @@
           var $dau = MP.api.segment(dauEvent, dauParams);
           var $revenue = MP.api.query('api/2.0/segmentation/multiseg', revParams);
           var data = {};
-
+          debugger
           // When requests are complete iterate through all keys and their dates
           $.when($dau, $revenue).done(function(dau, rev){
             _.each(_.keys(dau.values()), function(key){
               data[key] = {};
               _.each(_.keys(dau.values()[key]), function(date){
                   console.log (key, date, rev.data.values[key])
-                  debugger
+                  
                   var result = 0;
                    if (typeof rev.data.values[key] != 'undefined') {
                      var divisor = rev.data.values[key][date];
