@@ -71,7 +71,7 @@
                      result = divisor / dividend;
                    }
                    // Validation where the graph broke because it tried to scale infinty
-                   if (result == Infinity || result == undefined){
+                   if (result == Infinity || result == undefined || isNan(result)){
                      result = 0;
                    }
                   
