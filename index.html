@@ -17,6 +17,7 @@
     </div>
     <div id="table"></div>
     <script>
+      MP.api.MAX_SIMULTANEOUS_QUERIES = 10
       MP.api.ready(function() {
         var revenueEventName = $('#eventSelectRev').MPEventSelect();
         var dauEventName = $('#eventSelectDAU').MPEventSelect();
@@ -37,7 +38,7 @@
           // Setting our paramaters to the selected values
           var dauParams = {
             on: 'properties["' + dauProp.val() +'"]',
-            unit: 'day',
+            unit: 'week',
             type: 'unique',
             from: moment().subtract(30, 'days')
           };
